@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Converter</title>
+</head>
+<body>
+    <h1>Time Converter</h1>
+    <label for="start-time">Start Time (HH:MM):</label>
+    <input type="time" id="start-time">
+    <br><br>
+    <label for="end-time">End Time (HH:MM):</label>
+    <input type="time" id="end-time">
+    <br><br>
+    <label for="break-time">Break Time (minutes):</label>
+    <input type="number" id="break-time" min="0" value="0">
+    <br><br>
+    <button onclick="convertTime()">Calculate Time</button>
+    <p id="output"></p>
+
+    <script>
+        function convertTime() {
+            const startTime = document.getElementById('start-time').value;
+            const endTime = document.getElementById('end-time').value;
+            const breakTime = parseInt(document.getElementById('break-time').value, 10) || 0;
+
+            if (!startTime || !endTime) {
+                document.getElementById('output').innerText = 'Please enter both start and end times.';
+                return;
+            }
+
+            // Split the time strings to extract hours and minutes
+            const [startHours, startMinutes] = startTime.split(':').map(Number);
+            const [endHours, endMinutes] = endTime.split(':').map(Number);
+
+            // Convert start and end times to minutes
+            const startTotalMinutes = startHours * 60 + startMinutes;
+            const endTotalMinutes = endHours * 60 + endMinutes;
+
+            // Calculate total duration in minutes
+            let totalMinutes = endTotalMinutes - startTotalMinutes;
+
+            // Handle negative duration (e.g., if end time is on the next day)
+            if (totalMinutes < 0) {
+                totalMinutes += 24 * 60; // Add 24 hours worth of minutes
+            }
+
+            // Subtract the break time
+            totalMinutes -= breakTime;
+
+            // Ensure total minutes are not negative
+            totalMinutes = Math.max(0, totalMinutes);
+
+            // Calculate hours and minutes
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            // Calculate decimal hours
+            const decimalHours = (totalMinutes / 60).toFixed(2);
+
+            // Display the result
+            document.getElementById('output').innerText = `${hours}hrs and ${minutes}mins\n${decimalHours} hours`;
+        }
+    </script>
+</body>
+</html>
